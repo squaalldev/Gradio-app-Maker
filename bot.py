@@ -17,7 +17,7 @@ client = discord.Client(intents=intents)
 gradio_client = Client("abidlabs/gradio-playground-bot")
 
 def download_image(attachment):
-    response = httpx.get(attachment.url)
+    response = httpx.get(attachment.url, verify=False)
     image_path = f"./images/{attachment.filename}"
     os.makedirs("./images", exist_ok=True)
     with open(image_path, "wb") as f:
