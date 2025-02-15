@@ -17,7 +17,7 @@ client = discord.Client(intents=intents)
 gradio_client = Client("abidlabs/gradio-playground-bot")
 
 def download_image(attachment):
-    response = httpx.get(attachment.url, verify=False)
+    response = httpx.get(attachment.url)
     image_path = f"./images/{attachment.filename}"
     os.makedirs("./images", exist_ok=True)
     with open(image_path, "wb") as f:
@@ -30,12 +30,16 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    # Ignore messages from the bot itself
     if message.author == client.user:
         return
 
+    # Check if the bot is mentioned in the message and reply
     if client.user in message.mentions:
+        # Extract the message content without the bot mention
         clean_message = message.content.replace(f"<@{client.user.id}>", "").strip()
 
+        # Handle images (only the first image is used)
         files = []
         if message.attachments:
             for attachment in message.attachments:
@@ -44,6 +48,7 @@ async def on_message(message):
                     files.append(handle_file(image_path))
                     break
         
+        # Stream the responses to the channel
         for response in gradio_client.submit(
             message={"text": clean_message, "files": files},
         ):
