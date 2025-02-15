@@ -44,8 +44,13 @@ async def on_message(message):
                     break
         
         for response in gradio_client.submit(
-            message={"text": clean_message, "files": files},
-        ):
-            await message.channel.send(response[-1])
+    message={"text": clean_message, "files": files},
+):
+    content = response[-1]
+
+    # Dividir el mensaje en fragmentos de 2000 caracteres
+    for i in range(0, len(content), 2000):
+        chunk = content[i:i+2000]
+        await message.channel.send(chunk)
 
 client.run(TOKEN)
