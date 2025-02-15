@@ -49,9 +49,4 @@ async def on_message(message):
         ):
             content = response[-1]
 
-            # Dividir el mensaje en fragmentos de 2000 caracteres
-            for i in range(0, len(content), 2000):
-                chunk = content[i:i+2000]
-                await message.channel.send(chunk)
-
 client.run(TOKEN)
